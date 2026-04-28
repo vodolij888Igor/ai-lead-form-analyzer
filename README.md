@@ -122,6 +122,40 @@ API base URL:
 - Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
+## Skills Demonstrated
+
+- FastAPI backend development
+- REST API endpoint design
+- Pydantic request and response validation
+- OpenAI API integration
+- Environment variable handling with `.env`
+- API error handling
+- Swagger UI testing
+- Git/GitHub project workflow
+- AI automation business use case: lead scoring and lead qualification
+
+## Security Notes
+
+- API keys are stored in `.env` locally
+- `.env` is excluded from GitHub
+- `.env.example` is used as a safe template
+- The backend returns clear errors without exposing secrets
+
+## Possible Improvements
+
+- Add CRM integration
+- Save analyzed leads to a database
+- Add email notification for high-priority leads
+- Add dashboard for reviewing leads
+- Add authentication
+- Deploy backend to a cloud service
+
+## Project Status
+
+Current version: working portfolio MVP with real OpenAI API integration.
+
+This project demonstrates how AI can analyze website lead form submissions and help a business prioritize follow-up actions.
+
 ## Notes for Next Iteration
 
 - Add unit tests for schema validation and scoring behavior.
