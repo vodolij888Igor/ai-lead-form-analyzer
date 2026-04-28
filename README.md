@@ -1,8 +1,8 @@
 # AI Lead Form Analyzer (FastAPI)
 
-A portfolio-ready Python backend API that receives website lead form submissions and returns an AI-style lead analysis.
+A portfolio-ready Python backend API that receives website lead form submissions and returns an AI-powered lead analysis using the OpenAI API.
 
-This version uses **placeholder scoring logic** (no real LLM call yet), so you can focus on project structure and API fundamentals first.
+This version uses a **real OpenAI API call** with `gpt-4o-mini` to evaluate each lead and return structured analysis output.
 
 ## Project Structure
 
@@ -25,6 +25,7 @@ This version uses **placeholder scoring logic** (no real LLM call yet), so you c
 - FastAPI
 - Pydantic
 - Uvicorn
+- OpenAI Python SDK
 
 ## API Endpoint
 
@@ -98,6 +99,14 @@ On macOS/Linux use:
 cp .env.example .env
 ```
 
+Then open `.env` and set your OpenAI key:
+
+```env
+OPENAI_API_KEY=your_real_openai_api_key
+```
+
+Important: never commit `.env` to source control. This project already ignores `.env` via `.gitignore`.
+
 ### 4) Run the API
 
 ```bash
@@ -115,6 +124,5 @@ API base URL:
 
 ## Notes for Next Iteration
 
-- Replace placeholder logic in `app/services/lead_service.py` with an OpenAI (or other LLM) call.
 - Add unit tests for schema validation and scoring behavior.
 - Add persistent storage for analyzed leads.

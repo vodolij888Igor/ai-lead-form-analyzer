@@ -1,69 +1,79 @@
+import json
+import os
+
+from dotenv import load_dotenv
+from fastapi import HTTPException
+from openai import OpenAI
+
 from app.schemas.lead_schema import LeadAnalysisResponse, LeadRequest
 
-
-def _calculate_placeholder_score(lead: LeadRequest) -> int:
-    score = 0
-
-    if lead.budget_usd >= 50_000:
-        score += 35
-    elif lead.budget_usd >= 10_000:
-        score += 25
-    elif lead.budget_usd > 0:
-        score += 15
-
-    if lead.urgency == "high":
-        score += 30
-    elif lead.urgency == "medium":
-        score += 20
-    else:
-        score += 10
-
-    if len(lead.message) >= 150:
-        score += 20
-    elif len(lead.message) >= 60:
-        score += 15
-    else:
-        score += 8
-
-    if lead.industry.lower() in {"saas", "fintech", "healthcare", "ecommerce"}:
-        score += 15
-    else:
-        score += 8
-
-    return min(score, 100)
+load_dotenv()
 
 
-def _derive_priority(lead_score: int) -> str:
-    if lead_score >= 75:
-        return "high"
-    if lead_score >= 45:
-        return "medium"
-    return "low"
+def _build_prompt(lead: LeadRequest) -> str:
+    return (
+        "You are an expert sales lead qualification assistant for an automation services agency.\n"
+        "Analyze the lead and return only JSON.\n\n"
+        "Evaluate these factors:\n"
+        "1) Budget size\n"
+        "2) Urgency\n"
+        "3) Business type / industry\n"
+        "4) Message intent\n"
+        "5) Likelihood the lead is ready for automation services\n"
+        "6) Whether the lead should be followed up quickly\n\n"
+        "Required output fields (exact names):\n"
+        "- lead_score: integer from 0 to 100\n"
+        "- priority: one of low, medium, high\n"
+        "- summary: short professional summary\n"
+        "- recommended_action: clear next step\n"
+        "- reasoning: brief explanation of the scoring logic\n\n"
+        f"Lead data:\n"
+        f"- full_name: {lead.full_name}\n"
+        f"- email: {lead.email}\n"
+        f"- company_name: {lead.company_name}\n"
+        f"- industry: {lead.industry}\n"
+        f"- budget_usd: {lead.budget_usd}\n"
+        f"- message: {lead.message}\n"
+        f"- urgency: {lead.urgency}\n"
+    )
+
+
+def _extract_text_response(completion) -> str:
+    content = completion.choices[0].message.content
+    if content is None:
+        raise ValueError("Model returned an empty response.")
+    return content.strip()
 
 
 def analyze_lead(lead: LeadRequest) -> LeadAnalysisResponse:
-    lead_score = _calculate_placeholder_score(lead)
-    priority = _derive_priority(lead_score)
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="OpenAI API key is not configured. Set OPENAI_API_KEY in your .env file.",
+        )
 
-    summary = (
-        f"{lead.full_name} from {lead.company_name} submitted a "
-        f"{priority}-priority lead in the {lead.industry} industry."
-    )
-    recommended_action = {
-        "high": "Schedule a discovery call within 24 hours and prepare a tailored proposal.",
-        "medium": "Send a personalized follow-up email with relevant case studies this week.",
-        "low": "Add to nurture campaign and re-engage with educational content.",
-    }[priority]
+    try:
+        client = OpenAI(api_key=api_key)
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            temperature=0.2,
+            response_format={"type": "json_object"},
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Return valid JSON only. Do not include markdown or extra text.",
+                },
+                {"role": "user", "content": _build_prompt(lead)},
+            ],
+        )
 
-    reasoning = (
-        "This placeholder score combines budget, urgency, message detail, and "
-        "industry fit. Replace this logic with an LLM-powered analysis in a future step."
-    )
-
-    return LeadAnalysisResponse(
-        lead_score=lead_score,
-        priority=priority,
-        summary=summary,
-        recommended_action=recommended_action,
-        reasoning=reasoning,
-    )
+        parsed = json.loads(_extract_text_response(completion))
+        return LeadAnalysisResponse.model_validate(parsed)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="Failed to analyze lead with OpenAI. Please try again shortly.",
+        ) from exc
