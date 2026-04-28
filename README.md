@@ -56,6 +56,12 @@ This version uses **placeholder scoring logic** (no real LLM call yet), so you c
 }
 ```
 
+### Screenshot
+
+The screenshot below shows a successful POST /analyze-lead test in FastAPI Swagger UI.
+
+![Swagger UI successful lead analysis response](docs/images/swagger-lead-analysis-code-200.png)
+
 ## Getting Started (Beginner-Friendly)
 
 ### 1) Create and activate a virtual environment
