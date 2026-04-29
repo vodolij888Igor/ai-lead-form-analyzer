@@ -1,5 +1,7 @@
 # AI Lead Form Analyzer (FastAPI)
 
+[![Tests](https://github.com/vodolij888Igor/ai-lead-form-analyzer/actions/workflows/tests.yml/badge.svg)](https://github.com/vodolij888Igor/ai-lead-form-analyzer/actions/workflows/tests.yml)
+
 A portfolio-ready Python backend API that receives website lead form submissions and returns an AI-powered lead analysis using the OpenAI API.
 
 This version uses a **real OpenAI API call** with `gpt-4o-mini` to evaluate each lead and return structured analysis output.
