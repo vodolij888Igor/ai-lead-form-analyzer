@@ -16,7 +16,9 @@ This version uses a **real OpenAI API call** with `gpt-4o-mini` to evaluate each
 │       └── lead_service.py
 ├── .env.example
 ├── .gitignore
+├── pytest.ini
 ├── requirements.txt
+├── tests/
 └── README.md
 ```
 
@@ -122,6 +124,15 @@ API base URL:
 - Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
+### Running Tests
+
+Automated tests use `pytest` and mock the OpenAI client so no real API key or network call is required.
+
+```bash
+pip install -r requirements.txt
+pytest
+```
+
 ## Skills Demonstrated
 
 - FastAPI backend development
@@ -158,5 +169,4 @@ This project demonstrates how AI can analyze website lead form submissions and h
 
 ## Notes for Next Iteration
 
-- Add unit tests for schema validation and scoring behavior.
 - Add persistent storage for analyzed leads.
