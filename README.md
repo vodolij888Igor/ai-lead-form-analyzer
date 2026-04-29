@@ -243,6 +243,21 @@ JSON response: lead_score, priority, summary, recommended_action, reasoning
 - The design prioritizes a **small, readable local API** suitable for learning, demos, and portfolio review rather than production hardening.
 - **Future versions** could extend the same core with CRM integration, durable storage, outbound notifications, auth, cloud deployment, and a frontend dashboard for lead review.
 
+## Quality Checklist
+
+Portfolio-ready practices reflected in this repository:
+
+- [x] API endpoint tested with Swagger UI
+- [x] Automated tests added with pytest
+- [x] OpenAI calls mocked in tests
+- [x] Environment variables handled with `.env`
+- [x] `.env` excluded from GitHub
+- [x] API usage examples included
+- [x] Architecture documented
+- [x] Limitations documented
+- [x] Lead scoring response fields documented
+- [x] Project pushed to GitHub
+
 ## Notes for Next Iteration
 
 - Add persistent storage for analyzed leads.
