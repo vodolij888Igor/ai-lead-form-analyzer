@@ -209,6 +209,40 @@ Current version: working portfolio MVP with real OpenAI API integration.
 
 This project demonstrates how AI can analyze website lead form submissions and help a business prioritize follow-up actions.
 
+## Architecture
+
+- The FastAPI application exposes a **`POST /analyze-lead`** endpoint for submitting lead form data.
+- **Pydantic** schemas validate incoming requests and outgoing responses, keeping payloads consistent and type-safe.
+- A dedicated **service layer** (`app/services/lead_service.py`) encapsulates OpenAI lead analysis: prompt construction, API invocation, and structured JSON handling.
+- **Environment variables** (including `OPENAI_API_KEY`) are loaded from a local **`.env`** file via `python-dotenv`, so secrets stay out of source code.
+- **Swagger UI** (and ReDoc) ship with FastAPI for interactive exploration, request execution, and response inspection without extra tooling.
+- **Automated tests** mock the OpenAI client so the API contract, validation rules, and error paths can be verified **without** real API keys or external calls.
+
+Request flow (high level):
+
+```text
+Client / Swagger / Postman
+        ↓
+FastAPI route: POST /analyze-lead
+        ↓
+Pydantic validation
+        ↓
+AI service layer
+        ↓
+OpenAI API
+        ↓
+JSON response: lead_score, priority, summary, recommended_action, reasoning
+```
+
+## Limitations
+
+- This repository is a **backend portfolio project**, not a full CRM or sales operations platform.
+- The API **does not persist leads** in a database; each request is analyzed in isolation.
+- There is **no email or push notification** pipeline for alerts or follow-ups.
+- **Authentication and authorization** are not implemented; the endpoint is intended for trusted local or demo use.
+- The design prioritizes a **small, readable local API** suitable for learning, demos, and portfolio review rather than production hardening.
+- **Future versions** could extend the same core with CRM integration, durable storage, outbound notifications, auth, cloud deployment, and a frontend dashboard for lead review.
+
 ## Notes for Next Iteration
 
 - Add persistent storage for analyzed leads.
