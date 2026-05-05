@@ -1,5 +1,7 @@
 # AI Lead Form Analyzer (FastAPI)
 
+Structured FastAPI service that turns website lead form submissions into AI-generated lead scores, priorities, summaries, and recommended sales actions.
+
 [![Tests](https://github.com/vodolij888Igor/ai-lead-form-analyzer/actions/workflows/tests.yml/badge.svg)](https://github.com/vodolij888Igor/ai-lead-form-analyzer/actions/workflows/tests.yml)
 
 A portfolio-ready Python backend API that receives website lead form submissions and returns an AI-powered lead analysis using the OpenAI API.
